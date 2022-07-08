@@ -1,44 +1,25 @@
-import './categories.styles.scss'
+import { Routes, Route } from 'react-router-dom';
+import Home from './routes/home/home.component';
+import Navigation from './routes/navigation/navigation.component';
+
+const Shop = () => {
+  return (
+    <div>
+      <h1> Shop</h1>
+    </div>
+  )
+}
 
 const App = () => {
-  const categories = [
-    {
-      id: 1,
-      name: 'Hats',
-    },
-    {
-      id: 2,
-      name: 'Jackets',
-    },
-    {
-      id: 3,
-      name: 'Sneakers',
-    },
-    {
-      id: 4,
-      name: 'Womens',
-    },
-    {
-      id: 5,
-      name: 'Mens',
-    },
-  ];
-
   return (
-    <div className='categories-container'>
-      {
-        categories.map((category) => (
-          <div className='category-container' key={category.id}>
-            <div className='background-image' />
-            <div className='category-body-container'>
-              <h2>{category.name}</h2>
-              <p>Shop Now</p>
-            </div>
-          </div>
-        ))
-      }
-    </div>
-  );
+    <Routes>
+      <Route path='/' element={<Navigation />}>
+        <Route index element={<Home />} />
+        <Route path='/shop' element={<Shop />} />
+      </Route>
+
+    </Routes>
+  )
 };
 
 export default App;
