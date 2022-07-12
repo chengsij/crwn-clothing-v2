@@ -5,6 +5,12 @@ import {
   signInWithPopup,
   GoogleAuthProvider, 
 } from 'firebase/auth';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+} from 'firebase/firestore'
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -25,11 +31,34 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
-provider.setCustomParameters({
+googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
+
+
+export const db = getFirestore();
+export const getAuthedUserDoc = async(authnedUser) => {
+  const userDoc = doc(db, 'user', authnedUser.uid);
+  console.log(userDoc);
+  const userSnapshot = await getDoc(userDoc);
+  console.log(userSnapshot);
+  console.log(userSnapshot.exists());
+
+  if(!userSnapshot.exists()){
+    const { displayName, email } = authnedUser;
+    const createDate = new Date();
+
+    await setDoc((userDoc), {
+      displayName: displayName,
+      email: email,
+      createDate: createDate,
+    });
+  }
+  return userDoc;
+}
